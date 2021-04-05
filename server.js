@@ -20,18 +20,33 @@ app.get('/tables', (req, res, next) => {
     res.sendFile(path.join(__dirname, '/tables.html'));
 });
 
+app.get('/api/tables', (req, res, next) => {
+    res.sendFile(path.join(__dirname, '/tablesdb.json'));
+});
+app.get('/api/tables/:id', (req, res, next) => {
+    let tables = JSON.parse(fs.readFileSync('tablesdb.json'));
+    res.json(tables[Number(req.params.id)]);
+});
+
+app.post('/api/tables', (req, res, next) => {
+    let tables = JSON.parse(fs.readFileSync('tablesdb.json'));
+    let newTable = req.body;
+    let tableID = (tables.length).toString();
+    newTable.id = tableID;
+    tables.push(newTable);
+
+    fs.writeFileSync('tablesdb.json', JSON.stringify(tables));
+    res.json(tables);
+});
+
 app.get('/reserve', (req, res, next) => {
     res.sendFile(path.join(__dirname, '/reserve.html'));
 });
 
+app.get('/api/waitlist', (req, res, next) => {
+    res.sendFile(path.join(__dirname, '/waitlistdb.json'));
+});
+
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
 
-
-// /reserve
-
-// /waitlist
-
-// /api/tables
-
-// /api/waitlist
 
